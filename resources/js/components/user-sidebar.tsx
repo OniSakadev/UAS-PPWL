@@ -16,7 +16,7 @@ const userNavItems: NavItem[] = [
     },
     {
         title: 'My CV',
-        href: '/cv',
+        href: '/ajukan-cv',
         icon: FileText,
     },
 ];
