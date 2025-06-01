@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CvSubmission;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use App\Models\CvSubmission;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Storage;
 
 class CvSubmissionController extends Controller
 {
@@ -16,22 +16,23 @@ class CvSubmissionController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
+        $validated = $request->validate([
+            'name' => 'required|string',
             'email' => 'required|email',
-            'position' => 'required|string|max:255',
-            'cv_file' => 'required|mimes:pdf,doc,docx|max:2048',
+            'position' => 'required|string',
+            'cv_file' => 'required|file|mimes:pdf,doc,docx|max:2048',
         ]);
 
         $path = $request->file('cv_file')->store('cv_files', 'public');
 
         CvSubmission::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'position' => $request->position,
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'position' => $validated['position'],
             'cv_file' => $path,
         ]);
 
-        return redirect()->back()->with('success', 'CV berhasil dikirim!');
+        return redirect()->route('ajukan.cv')->with('success', 'CV berhasil diajukan!');
     }
 }
+

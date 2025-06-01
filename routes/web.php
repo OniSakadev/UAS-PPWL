@@ -18,7 +18,12 @@ Route::get('/', function () {
 | CV Submission (Public Access)
 |--------------------------------------------------------------------------
 */
-Route::get('/ajukan-cv', [CvSubmissionController::class, 'create']);
+// Untuk tampilkan form
+Route::get('/ajukan-cv', [CvSubmissionController::class, 'create'])->name('ajukan.cv');
+
+// Untuk handle form submission
+Route::post('/ajukan-cv', [CvSubmissionController::class, 'store'])->name('ajukan.cv.store');
+
 /*
 |--------------------------------------------------------------------------
 | Authenticated Routes
