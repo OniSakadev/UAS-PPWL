@@ -19,8 +19,6 @@ Route::get('/', function () {
 |--------------------------------------------------------------------------
 */
 Route::get('/ajukan-cv', [CvSubmissionController::class, 'create']);
-Route::post('/ajukan-cv', [CvSubmissionController::class, 'store'])->name('cv.store');
-
 /*
 |--------------------------------------------------------------------------
 | Authenticated Routes
