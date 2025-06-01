@@ -5,12 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\CvSubmission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
 
 class CvSubmissionController extends Controller
 {
     public function create()
     {
-        return view('cv.create');
+        return Inertia::render('AjukanCv');
     }
 
     public function store(Request $request)
