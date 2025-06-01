@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\CvSubmissionController;
 use Inertia\Inertia;
 
@@ -15,20 +16,35 @@ Route::get('/', function () {
 
 /*
 |--------------------------------------------------------------------------
+| Auth Routes (Login & Register)
+|--------------------------------------------------------------------------
+*/
+Route::middleware('guest')->group(function () {
+    Route::get('/login', function () {
+        return Inertia::render('Auth/Login');
+    })->name('login');
+
+    Route::get('/register', function () {
+        return Inertia::render('Auth/Register');
+    })->name('register');
+});
+
+/*
+|--------------------------------------------------------------------------
 | CV Submission (Public Access)
 |--------------------------------------------------------------------------
 */
 Route::get('/ajukan-cv', [CvSubmissionController::class, 'create']);
+
 /*
 |--------------------------------------------------------------------------
-| Authenticated Routes
+| Authenticated Routes (User & Admin)
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'verified'])->group(function () {
-    
-    // General fallback dashboard route if needed
+    // User Dashboard
     Route::get('/dashboard', function () {
-        return Inertia::render('dashboard');
+        return Inertia::render('User/dashboard');
     })->name('dashboard');
 
     // Admin Dashboard
@@ -36,10 +52,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('Admin/dashboard');
     })->name('admin.dashboard');
 
-    // User Dashboard
-    Route::get('/user/dashboard', function () {
-        return Inertia::render('User/dashboard');
-    })->name('user.dashboard');
+    // Logout route
+    Route::post('/logout', function () {
+        Auth::logout();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+        return redirect()->route('login');
+    })->name('logout');
 });
 
 /*
