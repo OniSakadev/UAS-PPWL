@@ -19,25 +19,31 @@ const userNavItems: NavItem[] = [
         href: '/ajukan-cv',
         icon: FileText,
     },
+    {
+    title: 'Status Lamaran',
+    href: '/status-lamaran',
+    icon: Folder,
+    },
+
 ];
 
 const footerNavItems: NavItem[] = [
-    {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: Folder,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
-    },
+    // {
+    //     title: 'Repository',
+    //     href: 'https://github.com/laravel/react-starter-kit',
+    //     icon: Folder,
+    // },
+    // {
+    //     title: 'Documentation',
+    //     href: 'https://laravel.com/docs/starter-kits#react',
+    //     icon: BookOpen,
+    // },
 ];
 
 export function UserSidebar() {
     return (
         <Sidebar collapsible="icon" variant="inset">
-            <SidebarHeader>
+            {/* <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
@@ -47,7 +53,7 @@ export function UserSidebar() {
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
-            </SidebarHeader>
+            </SidebarHeader> */}
 
             <SidebarContent>
                 <NavMain items={userNavItems} />
