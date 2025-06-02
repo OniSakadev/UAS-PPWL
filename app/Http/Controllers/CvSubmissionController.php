@@ -12,27 +12,26 @@ use Illuminate\Support\Facades\Auth;
 class CvSubmissionController extends Controller
 {
     public function create(Request $request)
-{
-    $user = $request->user();
-    $email = $request->user()?->email ?? $request->query('email');
-    $existingSubmission = false;
+    {
+        $user = $request->user();
+        $email = $request->user()?->email ?? $request->query('email');
+        $existingSubmission = false;
 
-    if ($email) {
-        $existingSubmission = CvSubmission::where('email', $email)->exists();
+        if ($email) {
+            $existingSubmission = CvSubmission::where('email', $email)->exists();
+        }
+
+        return Inertia::render('User/AjukanCv', [
+            'existingSubmission' => $existingSubmission,
+            'email' => $user ? $user->email : '',
+        ]);
     }
-
-    return Inertia::render('User/AjukanCv', [
-        'existingSubmission' => $existingSubmission,
-        'email' => $user ? $user->email : '',
-    ]);
-
-}
 
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            
+
             'name' => 'required|string',
             'position' => 'required|string',
             'cv_file' => 'required|file|mimes:pdf,doc,docx|max:2048',
@@ -41,7 +40,7 @@ class CvSubmissionController extends Controller
         $path = $request->file('cv_file')->store('cv_files', 'public');
 
         CvSubmission::create([
-            'user_id'  => Auth::id(), 
+            'user_id'  => Auth::id(),
             'name' => $validated['name'],
             'email' => Auth::user()->email,
             'position' => $validated['position'],

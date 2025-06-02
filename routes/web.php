@@ -14,6 +14,7 @@ use Inertia\Inertia;
 | Public Route
 |--------------------------------------------------------------------------
 */
+
 Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
@@ -42,11 +43,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // PERBAIKAN: Dashboard utama dengan logic role
     Route::get('/dashboard', function () {
         $user = Auth::user();
-        
+
         if ($user && $user->role === 'admin') {
             return redirect()->route('admin.dashboard');
         }
-        
+
         return Inertia::render('User/dashboard');
     })->name('dashboard');
 
@@ -90,30 +91,30 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     // Admin Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
-    
+
     // User Management
     Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
     Route::post('/users', [UserController::class, 'store'])->name('admin.users.store');
     Route::put('/users/{user}', [UserController::class, 'update'])->name('admin.users.update');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
-    
+
     // Other Admin Features
     Route::get('/companies', function () {
         return Inertia::render('Admin/Companies');
     })->name('admin.companies');
-    
+
     Route::get('/cv', function () {
         return Inertia::render('Admin/CvManagement');
     })->name('admin.cv');
-    
+
     Route::get('/cv/create', function () {
         return Inertia::render('Admin/AddCvData');
     })->name('admin.cv.create');
-    
+
     Route::get('/cv/verification', function () {
         return Inertia::render('Admin/CvVerification');
     })->name('admin.cv.verification');
 });
 
-require __DIR__.'/settings.php';
-require __DIR__.'/auth.php';
+require __DIR__ . '/settings.php';
+require __DIR__ . '/auth.php';
