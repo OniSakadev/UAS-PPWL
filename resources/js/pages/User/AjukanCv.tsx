@@ -16,12 +16,7 @@ export default function AjukanCv({ existingSubmission }: { existingSubmission: b
               >
                 {processing ? 'Mengirim...' : 'Kirim CV'}
               </button>
-            </form>
-          </section>
-        </div>
-      </div>
-    </AppLayout>
-  );
+            
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setData(e.target.name as keyof typeof data, e.target.value);
     };
