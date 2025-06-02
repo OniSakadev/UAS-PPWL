@@ -11,7 +11,7 @@ class CvSubmissionController extends Controller
 {
     public function create()
     {
-        return Inertia::render('AjukanCv');
+        return Inertia::render('User/AjukanCv');
     }
 
     public function store(Request $request)
