@@ -4,6 +4,9 @@ import { type User } from '@/types';
 
 export function UserInfo({ user, showEmail = false }: { user: User; showEmail?: boolean }) {
     const getInitials = useInitials();
+    if (!user) {
+        return <div className="text-muted-foreground">Tamu</div>;
+    }
 
     return (
         <>

@@ -9,10 +9,20 @@ use Illuminate\Support\Facades\Storage;
 
 class CvSubmissionController extends Controller
 {
-    public function create()
-    {
-        return Inertia::render('User/AjukanCv');
+    public function create(Request $request)
+{
+    $email = $request->user()?->email ?? $request->query('email');
+    $existingSubmission = false;
+
+    if ($email) {
+        $existingSubmission = CvSubmission::where('email', $email)->exists();
     }
+
+    return Inertia::render('User/AjukanCv', [
+        'existingSubmission' => $existingSubmission,
+    ]);
+}
+
 
     public function store(Request $request)
     {
@@ -23,6 +33,11 @@ class CvSubmissionController extends Controller
             'cv_file' => 'required|file|mimes:pdf,doc,docx|max:2048',
         ]);
 
+        $existing = CvSubmission::where('email', $validated['email'])->first();
+        if ($existing) {
+            return back()->withErrors(['email' => 'Anda sudah mengirimkan lamaran.']);
+        }
+
         $path = $request->file('cv_file')->store('cv_files', 'public');
 
         CvSubmission::create([
@@ -32,7 +47,16 @@ class CvSubmissionController extends Controller
             'cv_file' => $path,
         ]);
 
-        return redirect()->route('ajukan.cv')->with('success', 'CV berhasil diajukan!');
+        return redirect()->route('status-lamaran')->with('success', 'CV berhasil dikirim.');
+    }
+
+    public function index(Request $request)
+    {
+        $submissions = CvSubmission::where('email', $request->user()->email)->get();
+
+        return Inertia::render('UserStatusLamaran', [
+            'submissions' => $submissions,
+            'success' => session('success')
+        ]);
     }
 }
-

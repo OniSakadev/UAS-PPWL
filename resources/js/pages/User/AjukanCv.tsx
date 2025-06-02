@@ -1,7 +1,7 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -13,9 +13,9 @@ const breadcrumbs: BreadcrumbItem[] = [
 const companyImageUrl =
   'https://upload.wikimedia.org/wikipedia/id/thumb/c/c4/Telkom_Indonesia_2013.svg/200px-Telkom_Indonesia_2013.svg.png';
 
-export default function AjukanCv() {
+export default function AjukanCv({ existingSubmission }: { existingSubmission: boolean }) {
   const [cvFile, setCvFile] = useState<File | null>(null);
-  const { data, setData, post, processing, errors } = useForm({
+  const { data, setData, post, processing, errors, reset } = useForm({
     name: '',
     email: '',
     position: '',
@@ -36,8 +36,19 @@ export default function AjukanCv() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (existingSubmission) {
+      alert('Anda sudah pernah mengirim CV. Anda tidak dapat mengirim lebih dari satu lamaran.');
+      return;
+    }
+
     post('/ajukan-cv', {
       forceFormData: true,
+      onSuccess: () => {
+        alert('CV berhasil dikirim!');
+        reset();
+        window.location.href = '/status-lamaran';
+      },
     });
   };
 
@@ -131,8 +142,8 @@ export default function AjukanCv() {
 
               <button
                 type="submit"
-                disabled={processing}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition"
+                disabled={processing || existingSubmission}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition disabled:opacity-50"
               >
                 {processing ? 'Mengirim...' : 'Kirim CV'}
               </button>

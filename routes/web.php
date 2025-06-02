@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\CvSubmissionController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DashboardController; // TAMBAHKAN INI
+use App\Http\Controllers\LamaranController;
 use Inertia\Inertia;
 
 /*
@@ -37,13 +38,16 @@ Route::middleware('guest')->group(function () {
 |--------------------------------------------------------------------------
 */
 
-// Untuk tampilkan form
-Route::get('/ajukan-cv', [CvSubmissionController::class, 'create'])->name('ajukan.cv');
+Route::middleware(['auth'])->group(function () {
+    // Tampilkan form ajukan cv (GET)
+    Route::get('/ajukan-cv', [CvSubmissionController::class, 'create'])->name('ajukan.cv');
 
-// Untuk handle form submission
-Route::post('/ajukan-cv', [CvSubmissionController::class, 'store'])->name('ajukan.cv.store');
+    // Submit form ajukan cv (POST)
+    Route::post('/ajukan-cv', [CvSubmissionController::class, 'store'])->name('ajukan.cv.store');
 
-Route::get('/ajukan-cv', [CvSubmissionController::class, 'create']);
+    // Status lamaran
+    Route::get('/status-lamaran', [LamaranController::class, 'index'])->name('status-lamaran');
+});
 
 
 /*
@@ -51,11 +55,11 @@ Route::get('/ajukan-cv', [CvSubmissionController::class, 'create']);
 | Authenticated Routes (User & Admin)
 |--------------------------------------------------------------------------
 */
+Route::get('/dashboard', function () {
+    return Inertia::render('User/dashboard');
+})->name('dashboard');
+
 Route::middleware(['auth', 'verified'])->group(function () {
-    // User Dashboard
-    Route::get('/dashboard', function () {
-        return Inertia::render('User/dashboard');
-    })->name('dashboard');
 
     // Admin Dashboard - PERBAIKAN: gunakan controller
     Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
@@ -99,6 +103,8 @@ Route::middleware(['auth'])->group(function () {
         })->name('admin.cv.verification');
     });
 });
+
+
 
 /*
 |--------------------------------------------------------------------------
