@@ -36,7 +36,15 @@ Route::middleware('guest')->group(function () {
 | CV Submission (Public Access)
 |--------------------------------------------------------------------------
 */
+
+// Untuk tampilkan form
+Route::get('/ajukan-cv', [CvSubmissionController::class, 'create'])->name('ajukan.cv');
+
+// Untuk handle form submission
+Route::post('/ajukan-cv', [CvSubmissionController::class, 'store'])->name('ajukan.cv.store');
+
 Route::get('/ajukan-cv', [CvSubmissionController::class, 'create']);
+
 
 /*
 |--------------------------------------------------------------------------
