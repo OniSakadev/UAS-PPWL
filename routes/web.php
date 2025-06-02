@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\CvSubmissionController;
+use App\Http\Controllers\Admin\CvAdminController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DashboardController; // TAMBAHKAN INI
 use Inertia\Inertia;
@@ -99,7 +100,16 @@ Route::middleware(['auth'])->group(function () {
         })->name('admin.cv.verification');
     });
 });
-
+/*
+|--------------------------------------------------------------------------
+| CV Management Routes (Admin)
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/cv-management', [CvAdminController::class, 'index'])->name('cv.index');
+    Route::get('/cv-management/{cvSubmission}/download', [CvAdminController::class, 'download'])->name('cv.download');
+    Route::delete('/cv-management/{cvSubmission}', [CvAdminController::class, 'destroy'])->name('cv.destroy');
+});
 /*
 |--------------------------------------------------------------------------
 | Additional Route Files
