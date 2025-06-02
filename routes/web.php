@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\CvSubmissionController;
+use App\Http\Controllers\Admin\CvAdminController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\LamaranController;
@@ -71,7 +72,16 @@ Route::middleware(['auth'])->group(function () {
     // Status lamaran
     Route::get('/status-lamaran', [LamaranController::class, 'index'])->name('status-lamaran');
 });
-
+/*
+|--------------------------------------------------------------------------
+| CV Management Routes (Admin)
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/cv-management', [CvAdminController::class, 'index'])->name('cv.index');
+    Route::get('/cv-management/{cvSubmission}/download', [CvAdminController::class, 'download'])->name('cv.download');
+    Route::delete('/cv-management/{cvSubmission}', [CvAdminController::class, 'destroy'])->name('cv.destroy');
+});
 /*
 |--------------------------------------------------------------------------
 | Admin Routes
