@@ -4,20 +4,22 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddUserIdToCvSubmissionsTable extends Migration
+return new class extends Migration
 {
     public function up()
-{
-    Schema::table('cv_submissions', function (Blueprint $table) {
-        $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-    });
-}
+    {
+        Schema::table('cv_submissions', function (Blueprint $table) {
+            $table->unsignedBigInteger('user_id')->nullable()->after('id');
+            
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+        });
+    }
 
-public function down()
-{
-    Schema::table('cv_submissions', function (Blueprint $table) {
-        $table->dropForeign(['user_id']);
-    });
-}
-
-}
+    public function down()
+    {
+        Schema::table('cv_submissions', function (Blueprint $table) {
+            $table->dropForeign(['user_id']);
+            $table->dropColumn('user_id');
+        });
+    }
+};
