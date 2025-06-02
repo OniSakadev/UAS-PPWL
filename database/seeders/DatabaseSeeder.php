@@ -2,22 +2,47 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Disable foreign key constraints
+        Schema::disableForeignKeyConstraints();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // Clear existing data
+        DB::table('activity_logs')->truncate(); // Truncate child table first
+        DB::table('users')->truncate(); // Then parent table
+
+        // Create Admin User
+        DB::table('users')->insert([
+            'name' => 'Admin User',
+            'email' => 'admin@gmail.com',
+            'email_verified_at' => null,
+            'password' => Hash::make('admin1234'),
+            'remember_token' => null,
+            'created_at' => now(),
+            'updated_at' => now(),
+            'role' => 'admin',
         ]);
+
+        // Create Regular User
+        DB::table('users')->insert([
+            'name' => 'Regular User',
+            'email' => 'user@gmail.com',
+            'email_verified_at' => null,
+            'password' => Hash::make('user1234'),
+            'remember_token' => null,
+            'created_at' => now(),
+            'updated_at' => now(),
+            'role' => 'user',
+        ]);
+
+        // Re-enable foreign key constraints
+        Schema::enableForeignKeyConstraints();
     }
 }
