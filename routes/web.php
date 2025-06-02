@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\CvSubmissionController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\DashboardController; // TAMBAHKAN INI
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\LamaranController;
 use Inertia\Inertia;
 
@@ -34,35 +34,20 @@ Route::middleware('guest')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| CV Submission (Public Access)
+| Dashboard Route dengan Logic Pembedaan Role
 |--------------------------------------------------------------------------
 */
-
-Route::middleware(['auth'])->group(function () {
-    // Tampilkan form ajukan cv (GET)
-    Route::get('/ajukan-cv', [CvSubmissionController::class, 'create'])->name('ajukan.cv');
-
-    // Submit form ajukan cv (POST)
-    Route::post('/ajukan-cv', [CvSubmissionController::class, 'store'])->name('ajukan.cv.store');
-
-    // Status lamaran
-    Route::get('/status-lamaran', [LamaranController::class, 'index'])->name('status-lamaran');
-});
-
-
-/*
-|--------------------------------------------------------------------------
-| Authenticated Routes (User & Admin)
-|--------------------------------------------------------------------------
-*/
-Route::get('/dashboard', function () {
-    return Inertia::render('User/dashboard');
-})->name('dashboard');
-
 Route::middleware(['auth', 'verified'])->group(function () {
-
-    // Admin Dashboard - PERBAIKAN: gunakan controller
-    Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+    // PERBAIKAN: Dashboard utama dengan logic role
+    Route::get('/dashboard', function () {
+        $user = Auth::user();
+        
+        if ($user && $user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+        
+        return Inertia::render('User/dashboard');
+    })->name('dashboard');
 
     // Logout route
     Route::post('/logout', function () {
@@ -75,41 +60,50 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| User Management Routes (Admin)
+| User Routes (Auth Required)
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth'])->group(function () {
-    Route::prefix('admin')->group(function () {
-        Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
-        Route::post('/users', [UserController::class, 'store'])->name('admin.users.store');
-        Route::put('/users/{user}', [UserController::class, 'update'])->name('admin.users.update');
-        Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
-        
-        // Tambahan route untuk sidebar navigation
-        Route::get('/companies', function () {
-            return Inertia::render('Admin/Companies');
-        })->name('admin.companies');
-        
-        Route::get('/cv', function () {
-            return Inertia::render('Admin/CvManagement');
-        })->name('admin.cv');
-        
-        Route::get('/cv/create', function () {
-            return Inertia::render('Admin/AddCvData');
-        })->name('admin.cv.create');
-        
-        Route::get('/cv/verification', function () {
-            return Inertia::render('Admin/CvVerification');
-        })->name('admin.cv.verification');
-    });
+    // CV Submission
+    Route::get('/ajukan-cv', [CvSubmissionController::class, 'create'])->name('ajukan.cv');
+    Route::post('/ajukan-cv', [CvSubmissionController::class, 'store'])->name('ajukan.cv.store');
+
+    // Status lamaran
+    Route::get('/status-lamaran', [LamaranController::class, 'index'])->name('status-lamaran');
 });
-
-
 
 /*
 |--------------------------------------------------------------------------
-| Additional Route Files
+| Admin Routes
 |--------------------------------------------------------------------------
 */
+Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
+    // Admin Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+    
+    // User Management
+    Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
+    Route::post('/users', [UserController::class, 'store'])->name('admin.users.store');
+    Route::put('/users/{user}', [UserController::class, 'update'])->name('admin.users.update');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
+    
+    // Other Admin Features
+    Route::get('/companies', function () {
+        return Inertia::render('Admin/Companies');
+    })->name('admin.companies');
+    
+    Route::get('/cv', function () {
+        return Inertia::render('Admin/CvManagement');
+    })->name('admin.cv');
+    
+    Route::get('/cv/create', function () {
+        return Inertia::render('Admin/AddCvData');
+    })->name('admin.cv.create');
+    
+    Route::get('/cv/verification', function () {
+        return Inertia::render('Admin/CvVerification');
+    })->name('admin.cv.verification');
+});
+
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
