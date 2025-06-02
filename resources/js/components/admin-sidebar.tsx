@@ -20,13 +20,8 @@ const adminNavItems: NavItem[] = [
         icon: Users,
     },
     {
-        title: 'Companies',
-        href: '/admin/companies',
-        icon: Building2,
-    },
-    {
         title: 'CV Management',
-        href: '/admin/cv',
+        href: '/admin/cv-management',
         icon: FileText,
     },
 ];
