@@ -5,17 +5,18 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Schema;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Run the database seeders.
-     */
     public function run(): void
     {
-        // Clear existing users
-        DB::table('users')->truncate();
+        // Disable foreign key constraints
+        Schema::disableForeignKeyConstraints();
+
+        // Clear existing data
+        DB::table('activity_logs')->truncate(); // Truncate child table first
+        DB::table('users')->truncate(); // Then parent table
 
         // Create Admin User
         DB::table('users')->insert([
@@ -40,5 +41,8 @@ class DatabaseSeeder extends Seeder
             'updated_at' => now(),
             'role' => 'user',
         ]);
+
+        // Re-enable foreign key constraints
+        Schema::enableForeignKeyConstraints();
     }
 }
