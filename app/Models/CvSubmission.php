@@ -6,5 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class CvSubmission extends Model
 {
-    protected $fillable = ['name', 'email', 'position', 'cv_file'];
+    protected $fillable = ['user_id', 'name', 'email', 'position', 'cv_file'];
+
 }

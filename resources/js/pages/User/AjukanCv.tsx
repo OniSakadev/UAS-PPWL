@@ -2,6 +2,7 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
+import { usePage } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -14,10 +15,11 @@ const companyImageUrl =
   'https://upload.wikimedia.org/wikipedia/id/thumb/c/c4/Telkom_Indonesia_2013.svg/200px-Telkom_Indonesia_2013.svg.png';
 
 export default function AjukanCv({ existingSubmission }: { existingSubmission: boolean }) {
+  const { email } = usePage().props;
   const [cvFile, setCvFile] = useState<File | null>(null);
   const { data, setData, post, processing, errors, reset } = useForm({
     name: '',
-    email: '',
+    email: email || '',
     position: '',
     cv_file: null as File | null,
   });
@@ -93,20 +95,20 @@ export default function AjukanCv({ existingSubmission }: { existingSubmission: b
               </div>
 
               <div>
-                <label htmlFor="email" className="block font-medium mb-1">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={data.email}
-                  onChange={handleInputChange}
-                  required
-                  className="block w-full border border-gray-300 rounded px-3 py-2"
-                />
-                {errors.email && <p className="text-red-600 text-sm">{errors.email}</p>}
+              <label htmlFor="email" className="block font-medium mb-1">
+                Email
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={data.email}
+                readOnly // Supaya tidak bisa diubah user
+                className="block w-full border border-gray-300 rounded px-3 py-2"
+              />
+              {errors.email && <p className="text-red-600 text-sm">{errors.email}</p>}
               </div>
+
 
               <div>
                 <label htmlFor="position" className="block font-medium mb-1">
