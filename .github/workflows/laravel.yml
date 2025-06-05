@@ -21,9 +21,4 @@ jobs:
         username: ${{ secrets.FTP_USER }}
         password: ${{ secrets.FTP_PASS }}
 
-    - name: Install Frontend Dependencies
-      run: npm ci
-
-    - name: Build Frontend
-      run: npm run build
 
