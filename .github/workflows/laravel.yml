@@ -20,12 +20,3 @@ jobs:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USER }}
         password: ${{ secrets.FTP_PASS }}
-
-    - name: Install NPM dependencies
-      run: npm install
-
-    - name: Build Vite assets
-      run: npm run build
-
-    - name: Upload to server
-      run: rsync -avz --delete public/build user@host:/path/to/app/public/build
