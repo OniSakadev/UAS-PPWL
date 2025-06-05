@@ -1,0 +1,32 @@
+name: Build React + TypeScript App
+
+on:
+  push:
+    branches:
+      - main  # atau branch yang kamu pakai
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18  # sesuaikan dengan versi kamu
+
+      - name: Install dependencies
+        run: npm ci  # lebih cepat dan aman dari npm install
+
+      - name: Build the app
+        run: npm run build
+
+      # Opsional: upload hasil build sebagai artifact (bisa dipakai untuk deploy ke server / storage)
+      - name: Upload build folder
+        uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: build  # atau dist, tergantung output folder proyek kamu
